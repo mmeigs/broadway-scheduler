@@ -1,0 +1,114 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #f3f1f1;
+}
+
+h1 {
+  text-align: center;
+  padding: 0;
+  margin: 10px;
+}
+
+#login {
+  margin-left: 30px;
+}
+
+#showName {
+  text-align: right;
+  margin-right: 20px;
+}
+
+#currentWeek {
+  margin: 0 30px 20px;
+}
+
+h3 {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.week {
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto;
+  width: 95%;
+  border: 5px solid rgb(50, 178, 192);
+  border-radius: 8px;
+  padding: 5px;
+  background-color: rgb(220, 220, 220);
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: rgb(236, 191, 236);
+  border: 2px solid rgb(193, 134, 209);
+  border-radius: 7px;
+  padding: 3px;
+  margin: 3px;
+  min-height: 100px;
+}
+
+.event {
+  flex: 1;
+  border: 2px solid rgb(155, 214, 18);
+  border-radius: 7px;
+  background-color: rgb(228, 238, 216);
+  padding: 7px;
+  margin: 3px;
+}
+
+.createDash {
+  margin-top: 50px;
+  margin-bottom: 200px;
+}
+
+.grid {
+  display: grid;
+  margin: 0 20px;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:  'loc time ppl'
+                        'info . chosen'
+                        'submit . .';
+}
+
+.location {
+  grid-area: 'loc';
+}
+
+.time {
+  grid-area: 'time';
+}
+
+.people {
+  grid-area: 'ppl';
+}
+
+.chosen {
+  grid-area: 'chosen';
+  min-height: 20px;
+  background-color: grey;
+}
+
+.info {
+  grid-area: 'info';
+}
+
+.previewEvent {
+  grid-area: 'submit';
+}
+
+.preview {
+  height: auto;
+  min-height: 100px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+#addEvent {
+  margin-left: 100px;
+}
