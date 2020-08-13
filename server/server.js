@@ -3,8 +3,8 @@ const app = express();
 const path = require('path');
 
 
-const popRouter = require('./routes/populate.js');
-
+const eventRouter = require('./routes/event.js');
+const personRouter = require('./routes/person.js');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -13,7 +13,10 @@ app.use(express.urlencoded({ extended: true }));
 // if (process.env.NODE_ENV === 'production') {
   app.use('/build', express.static(path.join(__dirname, '../build')));
 
-  app.use('/populate', popRouter);
+  app.use('/add', personRouter);
+
+  app.use('/populate', eventRouter);
+
   
   app.get('/', (req, res) => {
     res.sendFile(path.resolve(__dirname, '../index.html'));

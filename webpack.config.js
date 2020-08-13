@@ -30,7 +30,9 @@ module.exports = {
   devServer: {
     publicPath: '/build/',
     proxy: {
-      '/populate': 'http://localhost:3000'
+      '*': 'http://localhost:3000',
+      '/populate': 'http://localhost:3000',
+      '/add': 'http://localhost:3000'
     },
     hot: true
   }

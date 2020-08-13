@@ -2,6 +2,7 @@ html, body {
   margin: 0;
   padding: 0;
   background-color: #f3f1f1;
+  position: relative;
 }
 
 h1 {
@@ -14,6 +15,22 @@ h1 {
   margin-left: 30px;
 }
 
+.addPerson {
+  display: inline;
+  position: absolute;
+  right: 20px;
+  top: 10px;
+}
+
+.addPerson h3 {
+  display: inline;
+  text-align: left;
+}
+
+#addPerson {
+  text-align: right;
+}
+
 #showName {
   text-align: right;
   margin-right: 20px;
@@ -23,16 +40,17 @@ h1 {
   margin: 0 30px 20px;
 }
 
-h3 {
+.createDay {
   padding: 0;
-  margin: 0;
+  margin: 20px 0;
   text-align: center;
+  font-size: 20px
 }
 
 .week {
   display: flex;
   flex-direction: row;
-  margin: 0 auto;
+  margin: 0 auto 50px;
   width: 95%;
   border: 5px solid rgb(50, 178, 192);
   border-radius: 8px;
@@ -50,6 +68,7 @@ h3 {
   padding: 3px;
   margin: 3px;
   min-height: 100px;
+  width: 100%;
 }
 
 .event {
@@ -57,8 +76,10 @@ h3 {
   border: 2px solid rgb(155, 214, 18);
   border-radius: 7px;
   background-color: rgb(228, 238, 216);
-  padding: 7px;
-  margin: 3px;
+  padding: 2%;
+  margin: 2%;
+  max-height: 200px;
+  width: 90%;
 }
 
 .createDash {
@@ -66,7 +87,7 @@ h3 {
   margin-bottom: 200px;
 }
 
-.grid {
+/* .grid {
   display: grid;
   margin: 0 20px;
   grid-template-rows: 1fr 1fr 1fr;
@@ -74,32 +95,38 @@ h3 {
   grid-template-areas:  'loc time ppl'
                         'info . chosen'
                         'submit . .';
+} */
+
+.row1 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 10px 0;
 }
 
-.location {
-  grid-area: 'loc';
-}
-
-.time {
-  grid-area: 'time';
-}
-
-.people {
-  grid-area: 'ppl';
+.row2 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  /* margin-right: 70px; */
+  margin: 10px 70px 10px 0;
 }
 
 .chosen {
-  grid-area: 'chosen';
   min-height: 20px;
-  background-color: grey;
+  min-width: 350px;
+  background-color: rgb(207, 206, 206);
 }
 
-.info {
-  grid-area: 'info';
+.chosen h6 {
+  font-size: 15px;
+  margin: 5px;
+  font-weight: bold;
 }
 
-.previewEvent {
-  grid-area: 'submit';
+.chosen p {
+  font-size: 16px;
+  margin: 10px 5px;
 }
 
 .preview {
@@ -111,4 +138,14 @@ h3 {
 
 #addEvent {
   margin-left: 100px;
+}
+
+.deleteE {
+  background-color: rgb(214, 45, 45);
+  color: white;
+  text-emphasis: bold;
+  border-radius: 3px;
+  border: 1px solid rgb(177, 40, 40);
+  height: 22px;
+  margin-bottom: 10px;
 }

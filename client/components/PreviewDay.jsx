@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Event from './Event.jsx';
 import Day from './Day.jsx';
 
 
