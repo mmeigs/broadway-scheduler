@@ -1,13 +1,13 @@
 const path = require('path');
 
 module.exports = {
-  entry: path.resolve(__dirname, './client/index.js'),
+  mode: process.env.NODE_ENV,
+  entry: [path.resolve(__dirname, './client/index.js'), './client/stylesheets/styles.css'],
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
     publicPath: '/build/'
   },
-  mode: process.env.NODE_ENV,
   module: {
     rules: [
       {
@@ -16,7 +16,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react']
+            presets: ['@babel/preset-react', '@babel/preset-env']
           }
         }
       },
@@ -29,6 +29,7 @@ module.exports = {
   },
   devServer: {
     publicPath: '/build/',
+    contentBase: path.join(__dirname, 'build'),
     proxy: {
       '*': 'http://localhost:3000',
       '/populate': 'http://localhost:3000',

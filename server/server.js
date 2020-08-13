@@ -9,18 +9,19 @@ const personRouter = require('./routes/person.js');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// app.use('/assets', express.static(path.resolve(__dirname, '../client/assets')));
+
 
 // if (process.env.NODE_ENV === 'production') {
-  app.use('/build', express.static(path.join(__dirname, '../build')));
+app.use('/build', express.static(path.resolve(__dirname, '../build')));
 
-  app.use('/add', personRouter);
+app.use('/add', personRouter);
 
-  app.use('/populate', eventRouter);
+app.use('/populate', eventRouter);
 
-  
-  app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../index.html'));
-  })
+app.get('/', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../index.html'));
+})
 // }
 
 
