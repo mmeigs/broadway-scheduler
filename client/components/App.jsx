@@ -6,23 +6,27 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      needsUpdate: false,
       day: 1,
       days: [[],[],[],[],[],[],[]],
       week: 1,
       events: [],
       people: [],
       grouping: [],
-      newPerson: ''
+      newPerson: '',
+      only: [[],[],[],[],[],[],[]]
     };
     this.addPerson = this.addPerson.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    // this.handleChange = this.handleChange.bind(this);
     this.deleteInDB = this.deleteInDB.bind(this);
     this.trackName = this.trackName.bind(this);
     this.addOnePerson = this.addOnePerson.bind(this);
     this.eventForPreview = this.eventForPreview.bind(this);
     this.saveDay = this.saveDay.bind(this);
+    this.refreshEvents = this.refreshEvents.bind(this);
+    this.showOnly = this.showOnly.bind(this);
+    this.showAll = this.showAll.bind(this);
+    this.nextWeek = this.nextWeek.bind(this);
+    this.prevWeek = this.prevWeek.bind(this);
   }
 
   componentDidMount() {
@@ -30,9 +34,12 @@ class App extends Component {
       .then(data => data.json())
       .then(events => {
         const days = [[],[],[],[],[],[],[]];
+        // console.log('They should be here: ', events)
         for (let i = 0; i < events.length; i++) {
           if (events[i].week_id === this.state.week) {
-            const day = events[i].day_id - 1;
+            // console.log(events[i]);
+            const day = events[i].day_id - ((events[i].week_id - 1) * 7) - 1;
+            // const day = events[i].day_id - 1;
             days[day].push(events[i]);
           }
         }
@@ -42,6 +49,39 @@ class App extends Component {
         });
       })
   }
+
+  
+  refreshEvents() {
+    fetch('/populate')
+        .then(data => data.json())
+        .then(data => {
+          // console.log('response from full fetch: ', data)
+          const newEvents = [];
+          data.forEach(e => {
+            for (let i = 0; i < this.state.events.length; i++) {
+              if (e.name.includes(this.state.events[i].name[0]) && e.info === this.state.events[i].info) {
+                newEvents.push(e);
+              }
+            }
+          })
+          console.log('newEvents: ', newEvents)
+          const dayId = newEvents[0].day_id;
+          const weekId = newEvents[0].week_id;
+          console.log('dayId : ', dayId)
+          console.log('weekId : ', weekId)
+          console.log(dayId - ((weekId - 1)*7) - 1); // CHANGED THIS FOR WEEKSSS
+          const newDay = [...this.state.days[(dayId - ((weekId - 1)*7) - 1)], ...newEvents]; // AND THIS
+          console.log('newDay is : ', newDay);
+          const days = [...this.state.days];
+          days.splice((dayId - ((weekId - 1)*7) - 1), 1, newDay); // AND THIS
+          console.log('about to return: ', days);
+          this.setState({
+            ...this.state,
+            events: [],
+            days
+          })
+        })
+      }
 
   addPerson() {
     const name = document.querySelector('#name').value;
@@ -65,12 +105,14 @@ class App extends Component {
   }
 
   handleClick(day) {
+    // console.log('dayId : ', day)
     this.setState({
       day 
     })
   }
 
   deleteInDB(id, day_id) {
+    // console.log(id, day_id);
     fetch('/populate', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -79,23 +121,15 @@ class App extends Component {
       .catch(err => console.log(err));
 
     let days = this.state.days.slice();
-    const day = [...this.state.days[day_id - 1]];
+    const day = [...this.state.days[day_id - ((this.state.week - 1) * 7) - 1]];
     const restday = day.filter(e => e.event_id !== id);
-    days.splice(day_id - 1, 1, restday)
+    days.splice((day_id - ((this.state.week - 1) * 7) - 1), 1, restday)
 
     this.setState({
       ...this.state,
       days
     });
   }
-
-  // handleChange(newEvents) {
-  //   console.log('I got new events in App!!!!');
-  //   this.setState({
-  //     ...this.state,
-  //     needsUpdate: true
-  //   })
-  // }
 
   trackName(e) {
     this.setState({
@@ -106,7 +140,7 @@ class App extends Component {
 
   addOnePerson() {
     const grouping = document.querySelector('#grouping').value;
-    console.log('grouping: ', grouping)
+    // console.log('grouping: ', grouping)
     document.querySelector('#people').value = '';
     document.querySelector('#grouping').value = '';
     this.setState({
@@ -144,101 +178,114 @@ class App extends Component {
   }
 
   saveDay() {
-    const copy = [...this.state.events];
-    const sendIt = JSON.stringify({ events: [...this.state.events], day: this.state.day });
-
-    fetch('/populate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: sendIt
-    }).then(() => {
-     
-
-      fetch('/populate')
-      .then(data => data.json())
-      .then(data => {
-        console.log('response from full fetch: ', data)
-        const newEvents = [];
-        data.forEach(e => {
-          if (e.name.includes(mapped.name) && e.info === mapped.info) {
-            newEvents.push(e);
-          }
-        })
-        console.log('newEvents: ', newEvents)
-        const dayId = newEvents[0].day_id;
-        console.log('dayId : ', dayId)
-        const newDay = [...this.state.days[dayId - 1], ...newEvents];
-        const days = [...this.state.days];
-        days.splice(dayId - 1, 1, newDay);
-        this.setState({
-          ...this.state,
-          days
-        })
+    // console.log(this.state.day)
+    const sendIt = JSON.stringify({ events: [...this.state.events], day: this.state.day , week: this.state.week });
+    // console.log('post stuff: ', sendIt);
+      fetch('/populate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: sendIt
       })
+      // .then(() => {
+      //   console.log('I got into the dot then that starts fetching the rest')
+        .catch(err => {
+          console.log('Error in catch in CreateDash: ', err);
+        });
 
-    })
-      .catch(err => {
-        console.log('Error in catch in CreateDash: ', err);
-      });
+    // })
+  }
 
+  showOnly() {
+    const name = document.querySelector('#showOnly').value;
+    document.querySelector('#showOnly').value = '';
+    const only = this.state.days.reduce((acc, cur, i) => {
+      const day = cur.filter(e => e.name.includes(name) || e.name.includes('Full Company'));
+      console.log(`${i} day has events: ${day}`);
+      acc[i] = day;
+      return acc;
+    }, [[],[],[],[],[],[],[]]);
+    console.log('outside reduce: ', only);
+    const daysCopy = [...this.state.days];
     this.setState({
       ...this.state,
-      events: []
+      days: only,
+      only: daysCopy
+    })
+  }
+
+  showAll() {
+    this.setState({
+      ...this.state,
+      days: this.state.only,
+      only: []
+    })
+  }
+
+  nextWeek() {
+    console.log('next week clicked')
+    this.setState({
+      ...this.state,
+      week: this.state.week + 1
     })
 
-    // console.log('copy???: ', copy);
-    const mapped = copy.map(e => {
-      return { info: e.info, week_id: 1, name: e.name[0] }
+    fetch('/populate/')
+      .then(data => data.json())
+      .then(events => {
+        const days = [[],[],[],[],[],[],[]];
+        console.log(events)
+        for (let i = 0; i < events.length; i++) {
+          if (events[i].week_id === this.state.week) {
+            console.log(events[i]);
+            const day = events[i].day_id - ((events[i].week_id - 1) * 7) - 1;
+            // const day = events[i].day_id - 1;
+            days[day].push(events[i]);
+          }
+        }
+        this.setState({
+          ...this.state,
+          days,
+        });
+      })
+  }
+
+  prevWeek() {
+    console.log('previous week clicked')
+    this.setState({
+      ...this.state,
+      week: this.state.week - 1
     })
-    console.log('mapped is: ', mapped);
 
-    // fetch('/add', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(mapped)
-    // })
-    //   .then(response => response.json())
-    //   .then(response => {
-    //     console.log('response was: ', response);
-    //   })
-    //   .catch(err => {
-    //     console.log('FETCH ERROR :', err);
-    //   })
-
-    // fetch('/populate')
-    //   .then(data => data.json())
-    //   .then(data => {
-    //     console.log('response from full fetch: ', data)
-    //     const newEvents = [];
-    //     data.forEach(e => {
-    //       if (e.name.includes(mapped.name) && e.info === mapped.info) {
-    //         newEvents.push(e);
-    //       }
-    //     })
-    //     console.log('newEvents: ', newEvents)
-    //     const dayId = newEvents[0].day_id;
-    //     console.log('dayId : ', dayId)
-    //     const newDay = [...this.state.days[dayId - 1], ...newEvents];
-    //     const days = [...this.state.days];
-    //     days.splice(dayId - 1, 1, newDay);
-    //     this.setState({
-    //       ...this.state,
-    //       days
-    //     })
-    //   })
+    fetch('/populate/')
+      .then(data => data.json())
+      .then(events => {
+        const days = [[],[],[],[],[],[],[]];
+        console.log(events)
+        for (let i = 0; i < events.length; i++) {
+          if (events[i].week_id === this.state.week) {
+            console.log(events[i]);
+            const day = events[i].day_id - ((events[i].week_id - 1) * 7) - 1;
+            // const day = events[i].day_id - 1;
+            days[day].push(events[i]);
+          }
+        }
+        this.setState({
+          ...this.state,
+          days,
+        });
+      })
   }
 
   render() {
-    // console.log(this.state.days)
     return (
       <div className='app'>
-        <form method="POST" action='/login' id='login'>
-          <input name="username" type="text" placeholder="username"></input>
-          <input name="password" type="password" placeholder="password"></input>
-          <input type='submit' value="login"></input>
-        </form>
+        <div id='login'>
+          <input name="username" id='showOnly' type="text" placeholder="name"></input>
+          {/* <input name="password" type="password" placeholder="password"></input> */}
+          <input type='submit' value="showOnly" onClick={this.showOnly}></input>
+          <input type='submit' value='showAll' onClick={this.showAll}></input>
+        </div>
 
         <div className='addPerson'>
             <h3>Add a Co-worker</h3>
@@ -251,10 +298,18 @@ class App extends Component {
         </div>
 
         <h2 id='showName'>Codesmith the Musical</h2>
-        <h5 id="currentWeek">Current Week</h5>
+
+        <div class='changeWeek'>
+          <button id='prevWeek' onClick={this.prevWeek}>Previous</button>
+          <h4 id="currentWeek">Current Week</h4>
+          <button id='nextWeek' onClick={this.nextWeek}>Next</button>
+        </div>
         <Week days={this.state.days} week={this.state.week} deleteInDB={this.deleteInDB} handleClick={this.handleClick}/>
+        <div class='refresher'>
+          <button onClick={this.refreshEvents} id='refresh'>Refresh!!</button>
+        </div>
         <hr/>
-        <CreateDash day={this.state.day} people={this.state.people} events={this.state.events} grouping={this.state.grouping} newPerson={this.state.newPerson} trackName={this.trackName} addOnePerson={this.addOnePerson} eventForPreview={this.eventForPreview} saveDay={this.saveDay}/>
+        <CreateDash day={this.state.day} week={this.state.week} people={this.state.people} events={this.state.events} grouping={this.state.grouping} newPerson={this.state.newPerson} trackName={this.trackName} addOnePerson={this.addOnePerson} eventForPreview={this.eventForPreview} saveDay={this.saveDay}/>
       </div>
     );
   }

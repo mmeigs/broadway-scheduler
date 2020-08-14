@@ -3,16 +3,24 @@ const db = require('../models/eventModels.js');
 const eventController = {};
 
 eventController.getEvents = (req, res, next) => {
-  const grabItAll = `
-        SELECT Event.*, People.*, Day.day_of_week, Week.week_date
-        FROM Event
-        INNER JOIN Event_ppl ON Event.event_id = Event_ppl.event_id
-        INNER JOIN People ON People.person_id = Event_ppl.person_id
-        LEFT OUTER JOIN Day ON Day.day_id = Event.day_id
-        LEFT OUTER JOIN Week ON Week.week_id = Event.week_id
-        WHERE Event.week_id = $1;`;
-  const values = [1];
-  db.query(grabItAll, values, (err, events) => {
+  console.log('Made it to getEvents')
+  // const grabItAll = `
+  //       SELECT Event.*, People.*, Day.day_of_week, Week.week_date
+  //       FROM Event
+  //       LEFT OUTER JOIN Event_ppl ON Event.event_id = Event_ppl.event_id
+  //       LEFT OUTER JOIN People ON People.person_id = Event_ppl.person_id
+  //       LEFT OUTER JOIN Day ON Day.day_id = Event.day_id
+  //       LEFT OUTER JOIN Week ON Week.week_id = Event.week_id;`;
+  
+        // WHERE Event.week_id = $1;`;
+  const grabItAll = `SELECT Event.*, People.*, Day.*, Week.week_date
+  FROM Event
+  LEFT OUTER JOIN Event_ppl ON Event.event_id = Event_ppl.event_id
+  LEFT OUTER JOIN People ON People.person_id = Event_ppl.person_id
+  FULL OUTER JOIN Day ON Day.day_id = Event.day_id
+  LEFT OUTER JOIN Week ON Week.week_id = Event.week_id;`;
+  // const values = [1];
+  db.query(grabItAll, (err, events) => {
     if (err) return next({ log: 'getEvents', message: err });
 
     const cache = {};
@@ -33,13 +41,14 @@ eventController.getEvents = (req, res, next) => {
     }
 
     res.locals.events = Object.values(cache);
+    // console.log('heres the result', res.locals.events)
     return next();
   })
 }
 
-eventController.storeEvents = (req, res, next) => {
+eventController.storeEvents = async (req, res, next) => {
 
-  const { events, day } = req.body;
+  const { events, day, week } = req.body;
 
   for (let i = 0; i < events.length; i++) {
     const e = events[i];
@@ -47,8 +56,9 @@ eventController.storeEvents = (req, res, next) => {
     let addEventWithPpl = `BEGIN TRANSACTION;
 
     INSERT INTO Event (event_id, day_id, week_id, time_start, time_end, location, info)
-    VALUES (((SELECT max(event_id) FROM Event) + 1), ${day}, 1, '${e.time_start}', '${e.time_end}', '${e.location}', '${e.info}');`;
+    VALUES (((SELECT max(event_id) FROM Event) + ${i+1}), ${day}, ${week}, '${e.time_start}', '${e.time_end}', '${e.location}', '${e.info}');`;
 
+    console.log('name length and array :', e.name.length, e.name)
     for (let j = 0; j < e.name.length; j++) {
 
       const name = e.name[j];
@@ -61,12 +71,15 @@ eventController.storeEvents = (req, res, next) => {
 
     // console.log('query string!!!: ', addEventWithPpl)
 
-    db.query(addEventWithPpl, (err, result) => {
-      if (err) return next(err);
+    await db.query(addEventWithPpl, (err, result) => {
+      if (err) {
+        console.log(err);
+        return next(err);}
       // console.log('got past error!!!!')
-      return next();
+      
     });
   }
+  return next();
 }
 
 eventController.deleteEvent = (req, res, next) => {

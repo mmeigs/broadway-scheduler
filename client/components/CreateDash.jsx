@@ -126,7 +126,7 @@ class CreateDash extends Component {
     const chosen = this.props.people.slice().join(',  ');
     return (
       <div className='createDash'>
-        <h3 className='createDay'>Day Editing Now : {dayNames[this.props.day - 1]}</h3>
+        <h3 className='createDay'>You Are Now Editing : {dayNames[this.props.day - ((this.props.week - 1) * 7) - 1]}</h3>
         <div className='row1'>
           <div className='location'>
             <label htmlFor='location'>Location:</label>
