@@ -2,6 +2,7 @@ const db = require('../models/eventModels.js');
 
 const eventController = {};
 
+// get All Events from database for current week //
 eventController.getEvents = (req, res, next) => {
   console.log('Made it to getEvents')
   // const grabItAll = `
@@ -46,6 +47,8 @@ eventController.getEvents = (req, res, next) => {
   })
 }
 
+
+// Add newly created events to database //
 eventController.storeEvents = async (req, res, next) => {
 
   const { events, day, week } = req.body;
@@ -82,6 +85,7 @@ eventController.storeEvents = async (req, res, next) => {
   return next();
 }
 
+// Delete event from database //
 eventController.deleteEvent = (req, res, next) => {
   const { id } = req.body;
 
