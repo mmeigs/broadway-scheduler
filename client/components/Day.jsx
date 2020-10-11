@@ -5,15 +5,12 @@ const Day = (props) => {
 
   const events = [];
   let day = '';
-  // console.log(props.dayName, props.handleClick)
   const week = props.week;
   let dayId = ((week - 1) * 7) + props.input;
   let matinee = '';
   let evening = '';
   if (props.dayObj !== undefined && props.dayObj.length) {
     day = props.dayObj[0].day_of_week;
-    // dayId = props.dayObj[0].day_id;
-    // console.log('slow steps', props.dayObj)
     
     for (let i = 0; i < props.dayObj.length; i++) {
       if (props.dayObj[i].matinee) {

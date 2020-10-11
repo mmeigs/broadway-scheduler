@@ -5,8 +5,6 @@ class Event extends Component {
 
   render() {
     const { location, info, name, grouping, event_id, day_id } = this.props;
-    // console.log(start, end)
-    // console.log('client id: ', event_id);
     let { start, end } = this.props;
     if (start && end) {
       start = `${((Number(start.slice(0, 2)) + 11) % 12 + 1)}${start.slice(2, 5)}`;
