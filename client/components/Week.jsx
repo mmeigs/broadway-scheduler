@@ -7,12 +7,10 @@ class Week extends Component {
 
   render() {
     const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    // console.log(this.props.handleClick)
     const days = [];
     for(let i = 0; i < this.props.days.length; i++) {
       const dayObj = this.props.days[i];
       let key = Math.random();
-      // console.log('each day\'s array', dayObj)
       if (dayObj.length) {
         key = dayObj[0].event_id;
       }

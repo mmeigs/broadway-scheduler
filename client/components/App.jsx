@@ -34,12 +34,9 @@ class App extends Component {
       .then(data => data.json())
       .then(events => {
         const days = [[],[],[],[],[],[],[]];
-        // console.log('They should be here: ', events)
         for (let i = 0; i < events.length; i++) {
           if (events[i].week_id === this.state.week) {
-            // console.log(events[i]);
             const day = events[i].day_id - ((events[i].week_id - 1) * 7) - 1;
-            // const day = events[i].day_id - 1;
             days[day].push(events[i]);
           }
         }
@@ -55,7 +52,6 @@ class App extends Component {
     fetch('/populate')
         .then(data => data.json())
         .then(data => {
-          // console.log('response from full fetch: ', data)
           const newEvents = [];
           data.forEach(e => {
             for (let i = 0; i < this.state.events.length; i++) {
@@ -69,11 +65,11 @@ class App extends Component {
           const weekId = newEvents[0].week_id;
           console.log('dayId : ', dayId)
           console.log('weekId : ', weekId)
-          console.log(dayId - ((weekId - 1)*7) - 1); // CHANGED THIS FOR WEEKSSS
-          const newDay = [...this.state.days[(dayId - ((weekId - 1)*7) - 1)], ...newEvents]; // AND THIS
+          console.log(dayId - ((weekId - 1)*7) - 1);
+          const newDay = [...this.state.days[(dayId - ((weekId - 1)*7) - 1)], ...newEvents];
           console.log('newDay is : ', newDay);
           const days = [...this.state.days];
-          days.splice((dayId - ((weekId - 1)*7) - 1), 1, newDay); // AND THIS
+          days.splice((dayId - ((weekId - 1)*7) - 1), 1, newDay);
           console.log('about to return: ', days);
           this.setState({
             ...this.state,
@@ -105,14 +101,12 @@ class App extends Component {
   }
 
   handleClick(day) {
-    // console.log('dayId : ', day)
     this.setState({
       day 
     })
   }
 
   deleteInDB(id, day_id) {
-    // console.log(id, day_id);
     fetch('/populate', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -140,7 +134,6 @@ class App extends Component {
 
   addOnePerson() {
     const grouping = document.querySelector('#grouping').value;
-    // console.log('grouping: ', grouping)
     document.querySelector('#people').value = '';
     document.querySelector('#grouping').value = '';
     this.setState({
@@ -178,9 +171,7 @@ class App extends Component {
   }
 
   saveDay() {
-    // console.log(this.state.day)
     const sendIt = JSON.stringify({ events: [...this.state.events], day: this.state.day , week: this.state.week });
-    // console.log('post stuff: ', sendIt);
       fetch('/populate', {
         method: 'POST',
         headers: {
@@ -188,13 +179,9 @@ class App extends Component {
         },
         body: sendIt
       })
-      // .then(() => {
-      //   console.log('I got into the dot then that starts fetching the rest')
         .catch(err => {
           console.log('Error in catch in CreateDash: ', err);
         });
-
-    // })
   }
 
   showOnly() {
@@ -239,7 +226,6 @@ class App extends Component {
           if (events[i].week_id === this.state.week) {
             console.log(events[i]);
             const day = events[i].day_id - ((events[i].week_id - 1) * 7) - 1;
-            // const day = events[i].day_id - 1;
             days[day].push(events[i]);
           }
         }
@@ -266,7 +252,6 @@ class App extends Component {
           if (events[i].week_id === this.state.week) {
             console.log(events[i]);
             const day = events[i].day_id - ((events[i].week_id - 1) * 7) - 1;
-            // const day = events[i].day_id - 1;
             days[day].push(events[i]);
           }
         }
@@ -282,7 +267,6 @@ class App extends Component {
       <div className='app'>
         <div id='login'>
           <input name="username" id='showOnly' type="text" placeholder="name"></input>
-          {/* <input name="password" type="password" placeholder="password"></input> */}
           <input type='submit' value="showOnly" onClick={this.showOnly}></input>
           <input type='submit' value='showAll' onClick={this.showAll}></input>
         </div>
