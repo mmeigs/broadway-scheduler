@@ -83,7 +83,6 @@ h1 {
   flex-direction: column;
   flex: 1;
   color: white;
-  /* background-image: linear-gradient(180deg, rgb(33, 88, 227), rgb(104, 201, 254)); */
   background-image: linear-gradient(180deg, rgb(18, 18, 18), rgb(176, 176, 176));
   border: 2px solid rgb(28, 92, 252);
   border-radius: 7px;
@@ -108,8 +107,6 @@ h1 {
   height: 100px;
   background-color: rgb(0, 46, 162);
   overflow-y: auto;
-  /* background-image: linear-gradient(-20deg, rgb(33, 88, 227), rgb(132, 212, 255)); */
-  /* background-image: rgb(5, 61, 205) */
 }
 
 .dayHead {
@@ -124,8 +121,6 @@ h1 {
   flex-direction: column;
   justify-content: center;
   color: rgb(254, 70, 70);
-  /* border: 2px solid white;
-  border-radius: 8px; */
 }
 
 .dayName {
@@ -172,16 +167,6 @@ h1 {
   font-size: 30px;
 }
 
-/* .grid {
-  display: grid;
-  margin: 0 20px;
-  grid-template-rows: 1fr 1fr 1fr;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-areas:  'loc time ppl'
-                        'info . chosen'
-                        'submit . .';
-} */
-
 .row1 {
   display: flex;
   flex-direction: row;
@@ -193,7 +178,6 @@ h1 {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  /* margin-right: 70px; */
   margin: 10px 70px 10px 0;
 }
 
@@ -230,7 +214,6 @@ h1 {
 .deleteE {
   position: absolute;
   bottom: 0px;
-  /* left: 36%; */
   right: 2px;
   background-color: rgb(198, 198, 198);
   color: rgb(174, 0, 0);
@@ -239,5 +222,4 @@ h1 {
   border: 2px solid rgb(187, 21, 21);
   height: 22px;
   margin: 0 auto 2px;
-  
 }
