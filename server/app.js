@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 
 // Catch-All Error Handler //
 app.use((req, res, next) => {
-  res.status(404).send('Not found!');
+  return res.status(404).send('Not found!');
 })
 
 // Global Middleware Error Handler //
