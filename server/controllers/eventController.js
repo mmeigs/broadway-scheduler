@@ -4,7 +4,6 @@ const eventController = {};
 
 // get All Events from database for current week //
 eventController.getEvents = (req, res, next) => {
-  console.log('Made it to getEvents')
   // const grabItAll = `
   //       SELECT Event.*, People.*, Day.day_of_week, Week.week_date
   //       FROM Event
